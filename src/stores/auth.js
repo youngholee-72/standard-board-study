@@ -1,4 +1,5 @@
 import axios from "axios"
+import { axiosInstance, setAuthorizationHeader } from "@/api";
 import { defineStore } from "pinia";
 
 export const useAuthStore = defineStore('auth', {
@@ -17,6 +18,7 @@ export const useAuthStore = defineStore('auth', {
         this.userInfo = user
         console.log(user, this.userInfo)
         axios.defaults.headers.common['Authorization'] = `Bearer ${this.accessToken}`;
+        setAuthorizationHeader(`Bearer ${this.accessToken}`)
       } catch (error) {
         console.error('Login failed:', error);
       }
@@ -29,6 +31,7 @@ export const useAuthStore = defineStore('auth', {
         this.refreshToken = refresh_token;
         this.userInfo = user
         axios.defaults.headers.common['Authorization'] = `Bearer ${this.accessToken}`;
+        setAuthorizationHeader(`Bearer ${this.accessToken}`)
       } catch (error) {
         console.error('Token refresh failed:', error);
         this.logout();

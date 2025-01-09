@@ -40,16 +40,17 @@
 </template>
 
 <script setup>
-import { computed, ref, watch } from 'vue';
+import { computed } from 'vue';
 import { useAxios } from '@vueuse/integrations/useAxios';
 import { useRouter } from 'vue-router';
+import { axiosInstance } from '@/api'
 const router = useRouter()
 
 const { data, isLoading, error } = useAxios(`/api/board/v1/posts/list`,
   {
     method: 'post',
     data: { search_term: '' },
-  }, undefined, { immediate: true }
+  }, axiosInstance, { immediate: true }
 )
 
 const items = computed(() => data.value.body.items ? data.value.body.items : null)
