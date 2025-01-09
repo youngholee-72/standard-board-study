@@ -1,0 +1,8 @@
+{
+  "custom": {
+    "name": "test -ko",
+    "dept": "부서",
+    "company": "회사",
+    "manager": "담당자"
+  }
+}

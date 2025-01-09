@@ -1,6 +1,12 @@
 # BP365.Teams.StandardBoard.Vue
 
-This template should help get you started developing with Vue 3 in Vite.
+```sh
+# vue project
+npm init vue
+
+# version management
+git init
+```
 
 ## Recommended IDE Setup
 
@@ -32,4 +38,17 @@ npm run build
 
 ```sh
 npm run lint
+```
+
+## Project Libraries
+
+```sh
+npm i unplugin-vue-components
+npm i bootstrap bootstrap-icons
+npm i vue-i18n @intlify/unplugin-vue-i18n
+npm i vue-router
+npm i pinia
+npm i axios
+npm i @vueuse/core @vueuse/integrations
+npm i dayjs
 ```
