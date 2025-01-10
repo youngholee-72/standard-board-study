@@ -1,8 +1,12 @@
 <template>
   <div>
     <h2>게시글 목록</h2>
-    {{ totalCount }}
-    <!-- {{ isLoading }} {{ isFinished }} {{ items }} -->
+    <form @submit.prevent>
+      <div class="row g-3">
+        <input type="text" v-model="params.search_keyword" class="form-control" />
+      </div>
+    </form>
+    <hr class="my-4" />
     <AppLoading v-if="isLoading" />
     <AppError v-else-if="error" :message="error.message"></AppError>
     <div v-else class="row g-3">
@@ -30,6 +34,21 @@
           </tr>
         </tbody>
       </table>
+
+      <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center">
+          <li class="page-item" :class="{ disabled: !(params.page_number > 1) }"><a class="page-link" href="#"
+              @click.prevent="--params.page_number">Previous</a></li>
+          <li v-for="page in pageCount" :key="page" class="page-item" :class="{ active: params.page_number === page }">
+            <a class="page-link" href="#" @click.prevent="params.page_number = page">{{ page
+              }}</a>
+          </li>
+          <li class="page-item" :class="{ disabled: !(params.page_number < pageCount) }"><a class="page-link" href="#"
+              @click.prevent="++params.page_number">Next</a>
+          </li>
+        </ul>
+      </nav>
+
       <div class="row g-2">
         <div class="col-auto">
           <button class="btn btn-outline-dark" @click="create">Write</button>
@@ -40,21 +59,32 @@
 </template>
 
 <script setup>
-import { computed } from 'vue';
-import { useAxios } from '@vueuse/integrations/useAxios';
+import { ref, computed, watchEffect } from 'vue';
 import { useRouter } from 'vue-router';
-import { axiosInstance } from '@/api'
+import { getPosts } from '@/api/posts';
+
 const router = useRouter()
+const items = ref([])
+const totalCount = ref(0)
+const pageCount = computed(() => Math.ceil(totalCount.value / params.value.page_size))
 
-const { data, isLoading, error } = useAxios(`/api/board/v1/posts/list`,
-  {
-    method: 'post',
-    data: { search_term: '' },
-  }, axiosInstance, { immediate: true }
-)
+const params = ref({
+  page_number: 1,
+  page_size: 5,
+  search_keyword: '',
+  search_option: 'ALL'
+})
 
-const items = computed(() => data.value.body.items ? data.value.body.items : null)
-const totalCount = computed(() => data.value.body.total_count)
+const fetchPosts = async () => {
+  try {
+    const { data } = await getPosts(params.value);
+    items.value = data.body.items
+    totalCount.value = data.body.total_count
+  } catch (error) {
+    console.error(error)
+  }
+}
+watchEffect(fetchPosts)
 
 const create = () => {
   router.push({
@@ -72,6 +102,9 @@ const goPage = (id) => {
     // hash: '#world!'
   })
 }
+
+
+
 </script>
 
 <style scoped>
