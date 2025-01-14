@@ -61,6 +61,7 @@ import { useAxios } from '@vueuse/integrations/useAxios';
 import { useAlert } from '@/composables/alert';
 import { computed } from 'vue';
 import { useRouter } from 'vue-router';
+import { axiosInstance } from '@/api'
 const router = useRouter()
 
 const props = defineProps({
@@ -71,7 +72,7 @@ const { data, isLoading, error } = useAxios(`/api/board/v1/posts/item`,
   {
     method: 'post',
     data: { id: `${props.id}` }
-  }, undefined
+  }, axiosInstance
 )
 
 const item = computed(() => data.value.body)

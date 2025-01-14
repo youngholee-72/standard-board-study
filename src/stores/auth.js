@@ -1,4 +1,3 @@
-import axios from "axios"
 import { axiosInstance, setAuthorizationHeader } from "@/api";
 import { defineStore } from "pinia";
 
@@ -11,13 +10,13 @@ export const useAuthStore = defineStore('auth', {
   actions: {
     async login(credentials) {
       try {
-        const response = await axios.post('/api/token/v1/issue', credentials);
+        const response = await axiosInstance.post('/api/token/v1/issue', credentials);
         const { user, access_token, refresh_token } = response.data.body;
         this.accessToken = access_token;
         this.refreshToken = refresh_token;
         this.userInfo = user
         console.log(user, this.userInfo)
-        axios.defaults.headers.common['Authorization'] = `Bearer ${this.accessToken}`;
+        axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${this.accessToken}`;
         setAuthorizationHeader(`Bearer ${this.accessToken}`)
       } catch (error) {
         console.error('Login failed:', error);
@@ -25,12 +24,12 @@ export const useAuthStore = defineStore('auth', {
     },
     async refresh() {
       try {
-        const response = await axios.post('/api/token/v1/refresh', { user_id: this.userInfo.id, refresh: this.refreshToken });
+        const response = await axiosInstance.post('/api/token/v1/refresh', { user_id: this.userInfo.id, refresh: this.refreshToken });
         const { user, access_token, refresh_token } = response.data.body;
         this.accessToken = access_token;
         this.refreshToken = refresh_token;
         this.userInfo = user
-        axios.defaults.headers.common['Authorization'] = `Bearer ${this.accessToken}`;
+        axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${this.accessToken}`;
         setAuthorizationHeader(`Bearer ${this.accessToken}`)
       } catch (error) {
         console.error('Token refresh failed:', error);
@@ -41,7 +40,7 @@ export const useAuthStore = defineStore('auth', {
       this.accessToken = null;
       this.refreshToken = null;
       this.user = null;
-      delete axios.defaults.headers.common['Authorization'];
+      delete axiosInstance.defaults.headers.common['Authorization'];
     }
   }
 })

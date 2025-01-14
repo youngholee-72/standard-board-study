@@ -56,6 +56,7 @@ import { computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAlert } from '@/composables/alert';
 import { useAxios } from '@vueuse/integrations/useAxios';
+import { axiosInstance } from '@/api'
 const router = useRouter()
 
 const props = defineProps({
@@ -66,7 +67,7 @@ const { data, isLoading, error } = useAxios(`/api/board/v1/posts/item`,
   {
     method: 'post',
     data: { id: `${props.id}` }
-  }, undefined
+  }, axiosInstance
 )
 
 
@@ -82,7 +83,7 @@ const { vAlert, vSuccess } = useAlert()
 const { execute } = useAxios(`/api/board/v1/posts`,
   {
     method: 'put'
-  }, undefined,
+  }, axiosInstance,
   {
     immediate: false,
     onSuccess: () => {

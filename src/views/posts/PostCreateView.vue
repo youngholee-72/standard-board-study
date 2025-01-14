@@ -49,6 +49,7 @@ import { useRouter } from 'vue-router';
 import { useAlert } from '@/composables/alert';
 import { useAxios } from '@vueuse/integrations/useAxios';
 import { useAuthStore } from '@/stores/auth'
+import { createPost } from '@/api/posts'
 const authStore = useAuthStore()
 
 const { vAlert, vSuccess } = useAlert()
@@ -112,7 +113,16 @@ const save = async () => {
   console.log(jsonString);
 
   // POST 데이터 형식 주의 : { data: { ...submitData } }
-  execute({ data: { ...submitData } })
+  // execute({ data: { ...submitData } })
+
+  try {
+    await createPost(submitData);
+
+    router.push({ name: 'List' })
+    vSuccess('저장에 성공!')
+  } catch (error) {
+    console.error(error);
+  }
 }
 
 const goListPage = () => {
